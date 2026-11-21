@@ -1,4 +1,5 @@
-﻿using System.Text.Json;using ObjectOrientedPractics.Model;
+﻿using System.Text.Json;
+using ObjectOrientedPractics.Model;
 
 namespace ObjectOrientedPractics.Services;
 
@@ -9,7 +10,7 @@ public class ProjectSerializer
 {
     private static readonly string _appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
-    private static readonly JsonSerializerOptions _options = new()
+    private static readonly JsonSerializerOptions _options = new JsonSerializerOptions
     {
         WriteIndented = true
     };

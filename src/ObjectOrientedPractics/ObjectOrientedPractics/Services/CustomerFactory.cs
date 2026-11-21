@@ -7,10 +7,8 @@ namespace ObjectOrientedPractics.Services;
 /// </summary>
 public static class CustomerFactory
 {
-    //Объект для генерации случайных чисел
     private static readonly Random _random = new Random();
     
-    //Массив заготовок для имён
     private static readonly string[] _fullnames =
         [
             "Кириллова Антония Антоновна","Тетерин Данила Ефимович",
@@ -19,21 +17,21 @@ public static class CustomerFactory
             "Дорофеева Аграфена Кирилловна", "Селезнев Иннокентий Серафимович", "Куликов Иван Власович"
         ];
     
-    //Массив заготовок для адресов
-    private static readonly string[] _addresses =
+    private static readonly Address[] _addresses =
         [
-            "Россия, г. Москва, Железнодорожная ул., 17, корп. 1, кв. 122","Россия, г. Москва, Школьный пер., 17, корп. 5, кв. 43",
-            "Россия, г. Москва, Мира ул., 29, корп. 2, кв. 50", "Россия, г. Москва, Заречный пер., 87, корп. 6, кв. 77",
-            "Россия, г. Москва, Пролетарская ул., 26, корп. 3, кв. 116", "Россия, г. Москва, Мичурина ул., 30, корп. 6, кв. 61",
-            "Россия, г. Москва, Ленинская ул., 31, корп. 4, кв. 193", "Россия, г. Москва, Полевая ул., 4, корп. 5, кв. 56",
-            "Россия, г. Москва, Первомайский пер., 25, корп. 5, кв. 104", "Россия, г. Москва, 17 Сентября ул., 60, корп. 2, кв. 30"
+            new Address(101000, "Росссия", "Москва","Ул. Железнодорожная", "17","122"),
+            new Address(102000, "Росссия", "Томск","Иркутский тракт", "122","101"),
+            new Address(103000, "Росссия", "Новосибирск","Ул. Мира", "11","2"),
+            new Address(104000, "Росссия", "Новокузнецк","Ул. Красноармейская", "14","59"),
+            new Address(101000, "Росссия", "Пенза","Ул. Пролетарская", "31/2","63"),
+            new Address(101000, "Росссия", "Владивосток","Школьный пер.", "11а","98")
         ];
 
     public static Customer GenerateCustomer()
     {
         string randomFullName = _fullnames[_random.Next(_fullnames.Length)];
-        string randomAddress = _addresses[_random.Next(_addresses.Length)];
+        Address randomAddress = _addresses[_random.Next(_addresses.Length)];
 
-        return new Customer(randomFullName, randomAddress);
+        return new Customer(randomFullName, randomAddress); 
     }
 }

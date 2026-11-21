@@ -1,4 +1,5 @@
-﻿using ObjectOrientedPractics.Model;
+﻿using System.ComponentModel;
+using ObjectOrientedPractics.Model;
 using ObjectOrientedPractics.Services;
 
 namespace ObjectOrientedPractics.View.Tabs;
@@ -11,17 +12,40 @@ public partial class ItemsTab : UserControl
     private List<Item> _items = new List<Item>();
 
     /// <summary>
+    /// Возвращает и задаёт список товаров вкладки.
+    /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public List<Item> Items
+    {
+        get
+        {
+            return _items;
+        }
+        set
+        {
+            ValueValidator.AssertValueNotNull(value, nameof(Items));
+            _items = value;
+            UpdateListBox();
+        }
+    }
+    
+    /// <summary>
     /// Создает экземпляр класса <see cref="ItemsTab"/> и инициализирует компоненты.
     /// </summary>
     public ItemsTab()
     {
         InitializeComponent();
         IdTextBox.ReadOnly = true;
-        _items = ProjectSerializer.LoadItems(); // Загружаем сохраненные товары в память
-
+        _items = ProjectSerializer.LoadItems();
         foreach (var item in _items)
         {
             ItemsListBox.Items.Add(item);
+        }
+
+        var categories = Enum.GetValues(typeof(Category));
+        foreach (var category in categories)
+        {
+            CategoryComboBox.Items.Add(category);
         }
     }
     
@@ -38,6 +62,7 @@ public partial class ItemsTab : UserControl
             NameTextBox.Text = string.Empty;
             InfoTextBox.Text = string.Empty;
             CostTextBox.Text = string.Empty;
+            CategoryComboBox.SelectedIndex = -1;
 
             return;
         }
@@ -48,6 +73,7 @@ public partial class ItemsTab : UserControl
         NameTextBox.Text = selectedItem?.Name;
         InfoTextBox.Text = selectedItem?.Info;
         CostTextBox.Text = (selectedItem?.Cost).ToString();
+        CategoryComboBox.SelectedItem = selectedItem?.Category;
     }
 
     /// <summary>
@@ -181,24 +207,33 @@ public partial class ItemsTab : UserControl
             {
                 try
                 {
-                    // 4. Передаем число в свойство класса, где сработает проверка от 0 до 100 000
                     selectedItem.Cost = cost;
-                    // Если всё хорошо — возвращаем белый фон
                     CostTextBox.BackColor = Color.White;
                     ProjectSerializer.SaveItems(_items);
                 }
                 catch (ArgumentException)
                 {
-                    // Если число правильное, но вышло за рамки лимита (например, 500 000)
                     CostTextBox.BackColor = Color.Red;
                 }
             }
             else
             {
-                // 5. Если пользователь ввел буквы (например, "сто рублей") или оставил поле пустым
                 CostTextBox.BackColor = Color.Red;
             }
         }
+    }
+
+    /// <summary>
+    /// Обрабатывает изменение выбранной категории товара.
+    /// </summary>
+    private void CategoryComboBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (ItemsListBox.SelectedIndex == -1 || CategoryComboBox.SelectedIndex == -1)
+        {
+            return;
+        }
+
+        _items[ItemsListBox.SelectedIndex].Category = (Category)CategoryComboBox.SelectedIndex;
     }
 
     /// <summary>
@@ -208,10 +243,23 @@ public partial class ItemsTab : UserControl
     /// <param name="e">Аргументы события.</param>
     private void GenerateButton_Click(object sender, EventArgs e)
     {
-        Item randomItem = Services.ItemFactory.GenerateItem();
+        Item randomItem = ItemFactory.GenerateItem();
         _items.Add(randomItem);
         ItemsListBox.Items.Add(randomItem);
         ItemsListBox.SelectedItem = randomItem;
         ProjectSerializer.SaveItems(_items);
+    }
+    
+    /// <summary>
+    /// Обновляет отображение списка товаров в элементе ListBox.
+    /// </summary>
+    private void UpdateListBox()
+    {
+        ItemsListBox.Items.Clear();
+
+        foreach (var item in _items)
+        {
+            ItemsListBox.Items.Add(item);
+        }
     }
 }

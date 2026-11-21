@@ -1,6 +1,4 @@
-﻿using ObjectOrientedPractics.View.Tabs;
-
-namespace ObjectOrientedPractics.View;
+﻿namespace ObjectOrientedPractics.View;
 
 partial class MainForm
 {
@@ -34,10 +32,8 @@ partial class MainForm
         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
         tabControl1 = new System.Windows.Forms.TabControl();
         tabPage1 = new System.Windows.Forms.TabPage();
-        itemsTab1 = new ItemsTab();
         tabPage2 = new System.Windows.Forms.TabPage();
         tabControl1.SuspendLayout();
-        tabPage1.SuspendLayout();
         SuspendLayout();
         // 
         // tabControl1
@@ -53,7 +49,6 @@ partial class MainForm
         // 
         // tabPage1
         // 
-        tabPage1.Controls.Add(itemsTab1);
         tabPage1.Location = new System.Drawing.Point(4, 24);
         tabPage1.Name = "tabPage1";
         tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -61,15 +56,6 @@ partial class MainForm
         tabPage1.TabIndex = 0;
         tabPage1.Text = "Items";
         tabPage1.UseVisualStyleBackColor = true;
-        // 
-        // itemsTab1
-        // 
-        itemsTab1.Dock = System.Windows.Forms.DockStyle.Fill;
-        itemsTab1.Location = new System.Drawing.Point(3, 3);
-        itemsTab1.Name = "itemsTab1";
-        itemsTab1.Size = new System.Drawing.Size(786, 416);
-        itemsTab1.TabIndex = 0;
-        itemsTab1.Tag = "";
         // 
         // tabPage2
         // 
@@ -89,17 +75,13 @@ partial class MainForm
         Controls.Add(tabControl1);
         Icon = ((System.Drawing.Icon)resources.GetObject("$this.Icon"));
         Text = "ObjectOrientedPractics";
-        Load += MainForm_Load;
         tabControl1.ResumeLayout(false);
-        tabPage1.ResumeLayout(false);
         ResumeLayout(false);
     }
 
-    private System.Windows.Forms.TabPage tabPage2;
-
-    private ItemsTab itemsTab1;
-
     private System.Windows.Forms.TabPage tabPage1;
+
+    private System.Windows.Forms.TabPage tabPage2;
 
     private System.Windows.Forms.TabControl tabControl1;
 

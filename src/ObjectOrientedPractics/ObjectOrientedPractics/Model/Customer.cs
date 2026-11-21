@@ -9,7 +9,7 @@ public class Customer
 {
     private readonly int _id;
     private string _fullname = string.Empty;
-    private string _address = string.Empty;
+    private Address _address;
 
     /// <summary>
     /// Возвращает Id покупателя.
@@ -40,7 +40,7 @@ public class Customer
     /// Возвращает и задаёт адрес доставки покупателя.
     /// </summary>
     /// <exception cref="ArgumentException">Выбрасывается, если длина строки превышает 500 символов.</exception>
-    public string Address
+    public Address Address
     {
         get
         {
@@ -48,17 +48,21 @@ public class Customer
         }
         set
         {
-            ValueValidator.AssertStringOnLength(value, 500, nameof(Address));
+            ValueValidator.AssertValueNotNull(value, nameof(Address));
             _address = value;
         }
     }
     
     /// <summary>
     /// Создаёт экземпляр <see cref="Customer"/>.
+    ///<param name="FullName">Полное имя покупателя.</param>
+    /// <param name="Address">Адрес покупателя.</param>
     /// </summary>
     public Customer()
     {
         _id=IdGenerator.GetNextId();
+        FullName = string.Empty;
+        Address = new Address();
     }
     
     /// <summary>
@@ -66,7 +70,7 @@ public class Customer
     /// </summary>
     /// <param name="fullname">Полное имя покупателя. Должно быть не более 200 символов.</param>
     /// <param name="address">Адрес покупателя. Должен быть не более 500 символов.</param>
-    public Customer(string fullname, string address)
+    public Customer(string fullname, Address address)
     {
         FullName = fullname;
         Address = address;
