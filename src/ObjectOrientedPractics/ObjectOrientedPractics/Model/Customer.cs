@@ -1,81 +1,106 @@
-﻿using ObjectOrientedPractics.Services;
+﻿using System.Text.Json.Serialization;
+using ObjectOrientedPractics.Services;
 
 namespace ObjectOrientedPractics.Model;
 
 /// <summary>
-/// Представляет данные о покупателе с уникальным идентификатором, полным именем и адресом доставки.
+/// Представляет покупателя магазина с уникальным идентификатором, именем, адресом, корзиной и списком заказов.
 /// </summary>
 public class Customer
 {
     private readonly int _id;
-    private string _fullname = string.Empty;
-    private string _address = string.Empty;
+    private string _fullName;
+    private Address _address;
+    private Cart _cart;
+    private List<Order> _orders;
 
     /// <summary>
-    /// Возвращает Id покупателя.
+    /// Возвращает уникальный идентификатор покупателя.
     /// </summary>
+    [JsonInclude]
     public int Id
     {
         get { return _id; }
+        private init { _id = value; }
     }
 
     /// <summary>
-    /// Возвращает и задаёт полное имя покупателя.
+    /// Возвращает и задает полное имя покупателя (не более 200 символов).
     /// </summary>
-    /// <exception cref="ArgumentException">Выбрасывается, если длина строки превышает 200 символов.</exception>
     public string FullName
     {
-        get
-        {
-            return _fullname;
-        }
+        get { return _fullName; }
         set
         {
             ValueValidator.AssertStringOnLength(value, 200, nameof(FullName));
-            _fullname = value;
+            _fullName = value;
         }
     }
-    
+
     /// <summary>
-    /// Возвращает и задаёт адрес доставки покупателя.
+    /// Возвращает и задает адрес доставки покупателя.
     /// </summary>
-    /// <exception cref="ArgumentException">Выбрасывается, если длина строки превышает 500 символов.</exception>
-    public string Address
+    public Address Address
     {
-        get
-        {
-            return _address;
-        }
+        get { return _address; }
         set
         {
-            ValueValidator.AssertStringOnLength(value, 500, nameof(Address));
+            ValueValidator.AssertValueNotNull(value, nameof(Address));
             _address = value;
         }
     }
-    
+
     /// <summary>
-    /// Создаёт экземпляр <see cref="Customer"/>.
+    /// Возвращает и задает корзину покупателя.
     /// </summary>
+    public Cart Cart
+    {
+        get { return _cart; }
+        set { _cart = value; }
+    }
+
+    /// <summary>
+    /// Возвращает и задает список заказов покупателя.
+    /// </summary>
+    public List<Order> Orders
+    {
+        get { return _orders; }
+        set { _orders = value; }
+    }
+
+    /// <summary>
+    /// Создает экземпляр класса <see cref="Customer"/> по умолчанию.
+    /// </summary>
+    [JsonConstructor]
     public Customer()
     {
-        _id=IdGenerator.GetNextId();
-    }
-    
-    /// <summary>
-    /// Создаёт экземпляр класса <see cref="Customer"/> с заданными параметрами.
-    /// </summary>
-    /// <param name="fullname">Полное имя покупателя. Должно быть не более 200 символов.</param>
-    /// <param name="address">Адрес покупателя. Должен быть не более 500 символов.</param>
-    public Customer(string fullname, string address)
-    {
-        FullName = fullname;
-        Address = address;
         _id = IdGenerator.GetNextId();
+        _fullName = "Покупатель";
+        _address = new Address();
+        _cart = new Cart();
+        _orders = new List<Order>();
     }
-    
+
     /// <summary>
-    /// Возвращает строковое представление текущего покупателя для отображения в интерфейсе.
+    /// Создает экземпляр класса <see cref="Customer"/> с указанным полным именем и адресом.
+    /// </summary>
+    /// <param name="fullName">Полное имя покупателя.</param>
+    /// <param name="address">Адрес доставки.</param>
+    public Customer(string fullName, Address address)
+    {
+        _id = IdGenerator.GetNextId();
+        FullName = fullName;
+        Address = address;
+        _cart = new Cart();
+        _orders = new List<Order>();
+    }
+
+    /// <summary>
+    /// Возвращает строковое представление покупателя для отображения в элементах интерфейса.
     /// </summary>
     /// <returns>Полное имя покупателя.</returns>
-    public override string ToString() { return FullName; }
+    public override string ToString()
+    {
+        return FullName;
+    }
 }

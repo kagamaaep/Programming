@@ -21,4 +21,36 @@ public class ValueValidator
             throw new ArgumentException($"{propertyName} должен быть меньше {maxLength} символов.");
         }
     }
+
+    /// <summary>
+    /// Проверяет, находится ли число в заданном диапазоне.
+    /// </summary>
+    /// <param name="value">Проверяемое число.</param>
+    /// <param name="min">Минимальное число.</param>
+    /// <param name="max">Максимальное число.</param>
+    /// <param name="propertyName">Имя свойства, из сеттера которого вызывается проверка (используется в тексте ошибки).</param>
+    /// <exception cref="ArgumentException">
+    /// Выбрасывается, если число <paramref name="value"/> не находится в диапазоне от <paramref name="min"/> до <paramref name="max"/>.
+    /// </exception>
+    public static void AssertOnRange(double value, double min, double max, string propertyName)
+    {
+        if (value < min || value > max)
+        {
+            throw new ArgumentException($"{propertyName} должен быть в диапазоне от {min} до {max}.");
+        }
+    }
+    
+    /// <summary>
+    /// Проверяет, что переданный объект не равен null.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="propertyName">Проверяемый объект.</param>
+    /// <exception cref="ArgumentNullException">Имя свойства, из сеттера которого вызывается проверка (используется в тексте ошибки).</exception>
+    public static void AssertValueNotNull(object value, string propertyName)
+    {
+        if (value == null)
+        {
+            throw new ArgumentNullException(propertyName, $"{propertyName} не может быть null.");
+        }
+    }
 }

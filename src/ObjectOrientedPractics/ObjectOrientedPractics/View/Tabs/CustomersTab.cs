@@ -1,4 +1,5 @@
-﻿using ObjectOrientedPractics.Model;
+﻿using System.ComponentModel;
+using ObjectOrientedPractics.Model;
 using ObjectOrientedPractics.Services;
 
 namespace ObjectOrientedPractics.View.Tabs;
@@ -9,7 +10,31 @@ namespace ObjectOrientedPractics.View.Tabs;
 public partial class CustomersTab : UserControl
 {
     private List<Customer> _customers = new List<Customer>();
-    
+
+    /// <summary>
+    /// Возвращает и задает список покупателей вкладки.
+    /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public List<Customer> Customers
+    {
+        get
+        {
+            return _customers;
+        }
+        set
+        {
+            ValueValidator.AssertValueNotNull(value, nameof(Customers));
+            _customers = value;
+            UpdateListBox();
+        }
+    }
+
+    /// <summary>
+    /// Возвращает и задает список товаров магазина для генерации случайных заказов.
+    /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public List<Item> Items { get; set; } = new List<Item>();
+
     /// <summary>
     /// Создает экземпляр класса <see cref="CustomersTab"/> и инициализирует компоненты.
     /// </summary>
@@ -17,59 +42,38 @@ public partial class CustomersTab : UserControl
     {
         InitializeComponent();
         IdTextBox.ReadOnly = true;
-        _customers = ProjectSerializer.LoadCustomers(); // Загружаем сохраненные товары в память
-
-        foreach (var customer in _customers)
-        {
-            CustomersListBox.Items.Add(customer);
-        }
     }
-    
-    /// <summary>
-    /// Срабатывает при изменении выбранного покупателя в визуальном списке.
-    /// </summary>
-    /// <param name="sender">Источник события.</param>
-    /// <param name="e">Аргументы события.</param>
-    private  void CustomersListBox_SelectedIndexChanged(object sender, EventArgs e)
+
+    private void CustomersListBox_SelectedIndexChanged(object sender, EventArgs e)
     {
         if (CustomersListBox.SelectedIndex == -1)
         {
             IdTextBox.Text = string.Empty;
             FullNameTextBox.Text = string.Empty;
-            AddressTextBox.Text = string.Empty;
-
+            addressControl1.Address = new Address();
             return;
         }
 
-        Customer? selectedCustomer = CustomersListBox.SelectedItem as Customer;
-        IdTextBox.Text = selectedCustomer?.Id.ToString();
-        FullNameTextBox.Text = selectedCustomer?.FullName;
-        AddressTextBox.Text = selectedCustomer?.Address;
+        if (CustomersListBox.SelectedItem is not Customer selectedCustomer)
+        {
+            return;
+        }
+
+        IdTextBox.Text = selectedCustomer.Id.ToString();
+        FullNameTextBox.Text = selectedCustomer.FullName;
+        addressControl1.Address = selectedCustomer.Address;
     }
 
-    /// <summary>
-    /// Срабатывает при нажатии на кнопку добавления покупателя.
-    /// Создает пустой шаблон карточки покупателя.
-    /// </summary>
-    /// <param name="sender">Источник события.</param>
-    /// <param name="e">Аргументы события.</param>
     private void AddButton_Click(object sender, EventArgs e)
     {
         Customer newCustomer = new Customer();
         newCustomer.FullName = $"Покупатель {newCustomer.Id}";
-        newCustomer.Address = "Адрес";
+        newCustomer.Address = new Address();
         _customers.Add(newCustomer);
         CustomersListBox.Items.Add(newCustomer);
         CustomersListBox.SelectedItem = newCustomer;
-        ProjectSerializer.SaveCustomers(_customers);
     }
 
-    /// <summary>
-    /// Срабатывает при нажатии на кнопку удаления покупателя.
-    /// Удаляет выбранного покупателя из памяти и с экрана.
-    /// </summary>
-    /// <param name="sender">Источник события.</param>
-    /// <param name="e">Аргументы события.</param>
     private void RemoveButton_Click(object sender, EventArgs e)
     {
         if (CustomersListBox.SelectedIndex == -1)
@@ -90,25 +94,16 @@ public partial class CustomersTab : UserControl
 
             CustomersListBox.SelectedIndex = selectedIndex;
         }
-        ProjectSerializer.SaveCustomers(_customers);
     }
-    
-    /// <summary>
-    /// Срабатывает при изменении текста в поле полного имени покупателя.
-    /// Сохраняет изменения с защитой положения курсора от ввода задом наперед.
-    /// </summary>
-    /// <param name="sender">Источник события.</param>
-    /// <param name="e">Аргументы события.</param>
-     private void FullNameTextBox_TextChanged(object sender, EventArgs e)
+
+    private void FullNameTextBox_TextChanged(object sender, EventArgs e)
     {
         if (CustomersListBox.SelectedIndex == -1)
         {
             return;
         }
 
-        Customer? selectedItem = CustomersListBox.SelectedItem as Customer;
-
-        if (selectedItem != null)
+        if (CustomersListBox.SelectedItem is Customer selectedItem)
         {
             try
             {
@@ -118,7 +113,6 @@ public partial class CustomersTab : UserControl
                 int index = CustomersListBox.SelectedIndex;
                 CustomersListBox.Items[index] = selectedItem;
                 FullNameTextBox.SelectionStart = selectionStart;
-                ProjectSerializer.SaveCustomers(_customers);
             }
             catch (Exception)
             {
@@ -126,47 +120,33 @@ public partial class CustomersTab : UserControl
             }
         }
     }
-    
-    /// <summary>
-    /// Срабатывает при изменении текста в поле адреса покупателя.
-    /// </summary>
-    /// <param name="sender">Источник события.</param>
-    /// <param name="e">Аргументы события.</param>
-    private void AddressTextBox_TextChanged(object sender, EventArgs e)
-    {
-        if (CustomersListBox.SelectedIndex == -1)
-        {
-            return;
-        }
 
-        Customer? selectedItem = CustomersListBox.SelectedItem as Customer;
-
-        if (selectedItem != null)
-        {
-            try
-            {
-                selectedItem.Address = AddressTextBox.Text;
-                AddressTextBox.BackColor = Color.White;
-                ProjectSerializer.SaveCustomers(_customers);
-            }
-            catch (Exception)
-            {
-                AddressTextBox.BackColor = Color.Red;
-            }
-        }
-    }
-    
-    /// <summary>
-    /// Срабатывает при нажатии на кнопку генерации случайного покупателя.
-    /// </summary>
-    /// <param name="sender">Источник события.</param>
-    /// <param name="e">Аргументы события.</param>
     private void GenerateButton_Click(object sender, EventArgs e)
     {
         Customer randomCustomer = CustomerFactory.GenerateCustomer();
         _customers.Add(randomCustomer);
         CustomersListBox.Items.Add(randomCustomer);
         CustomersListBox.SelectedItem = randomCustomer;
-        ProjectSerializer.SaveCustomers(_customers);
+    }
+
+    private void GenerateOrderButton_Click(object sender, EventArgs e)
+    {
+        if (CustomersListBox.SelectedItem is not Customer selectedCustomer)
+        {
+            return;
+        }
+
+        Order randomOrder = CustomerFactory.GenerateOrder(selectedCustomer, Items);
+        selectedCustomer.Orders.Add(randomOrder);
+    }
+
+    private void UpdateListBox()
+    {
+        CustomersListBox.Items.Clear();
+
+        foreach (var item in _customers)
+        {
+            CustomersListBox.Items.Add(item);
+        }
     }
 }

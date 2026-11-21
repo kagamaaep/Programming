@@ -15,6 +15,18 @@
       <Compile Update="View\Tabs\CustomersTab.cs">
         <SubType>UserControl</SubType>
       </Compile>
+      <Compile Update="View\Controls\AddressControl.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
+      <Compile Update="View\Tabs\CartsTab.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
+      <Compile Update="View\Tabs\OrdersTab.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
+      <Compile Update="View\Controls\OrderControl.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
     </ItemGroup>
 
 </Project>

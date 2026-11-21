@@ -28,12 +28,18 @@ public static class ItemFactory
             "Встроенный светодиодный индикатор на дне мигает каждые 40 минут, а приложение на смартфоне считает дневной баланс воды."
         ];
 
+    /// <summary>
+    /// Генерирует товар случайным образом.
+    /// </summary>
+    /// <returns></returns>
     public static Item GenerateItem()
     {
         string randomName = _names[_random.Next(_names.Length)];
         string randomInfo = _infos[_random.Next(_infos.Length)];
         double randomCost = _random.Next(0,100000);
-
-        return new Item(randomName, randomInfo, randomCost);
+        var categories = Enum.GetValues(typeof(Category));
+        var randomCategory = (Category)categories.GetValue(_random.Next(categories.Length));
+        
+        return new Item(randomName, randomInfo, randomCost, randomCategory);
     }
 }

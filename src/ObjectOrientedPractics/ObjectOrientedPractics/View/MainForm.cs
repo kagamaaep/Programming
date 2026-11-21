@@ -1,40 +1,57 @@
+using ObjectOrientedPractics.Model;
+using ObjectOrientedPractics.Services;
 using ObjectOrientedPractics.View.Tabs;
 
 namespace ObjectOrientedPractics.View;
 
 /// <summary>
-/// Предоставляет главное окно приложения, содержащее вкладки для управления товарами и покупателями.
+/// Предоставляет главное окно приложения, содержащее вкладки для управления товарами, покупателями, корзинами и заказами.
 /// </summary>
 public partial class MainForm : Form
 {
-    /// <summary>
-    /// Пользовательский элемент управления для работы со списком товаров.
-    /// </summary>
+    private Store _store;
     private ItemsTab _itemsTab;
-    /// <summary>
-    /// Пользовательский элемент управления для работы со списком покупателей.
-    /// </summary>
     private CustomersTab _customersTab;
 
     public MainForm()
     {
         InitializeComponent();
+
+        _store = ProjectSerializer.LoadStore();
+
         _itemsTab = new ItemsTab();
         _itemsTab.Dock = DockStyle.Fill;
         tabPage1.Controls.Add(_itemsTab);
-        
+
         _customersTab = new CustomersTab();
         _customersTab.Dock = DockStyle.Fill;
-        
-        tabControl1.TabPages[1].Controls.Add(_customersTab);
+        tabPage2.Controls.Add(_customersTab);
+
+        _itemsTab.Items = _store.Items;
+        _customersTab.Customers = _store.Customers;
+        _customersTab.Items = _store.Items;
+        cartsTab1.Items = _store.Items;
+        cartsTab1.Customers = _store.Customers;
+        ordersTab1.Customers = _store.Customers;
+
+        tabControl1.SelectedIndexChanged += TabControl1_SelectedIndexChanged;
+        FormClosing += MainForm_FormClosing;
     }
 
-    /// <summary>
-    /// Срабатывает при первоначальной загрузке главной формы на экран.
-    /// </summary>
-    /// <param name="sender">Источник события.</param>
-    /// <param name="e">Аргументы события.</param>
-    private void MainForm_Load(object sender, EventArgs e)
+    private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
     {
+        if (tabControl1.SelectedIndex == 2)
+        {
+            cartsTab1.RefreshData();
+        }
+        else if (tabControl1.SelectedIndex == 3)
+        {
+            ordersTab1.RefreshData();
+        }
+    }
+
+    private void MainForm_FormClosing(object? sender, FormClosingEventArgs e)
+    {
+        ProjectSerializer.SaveStore(_store);
     }
 }
