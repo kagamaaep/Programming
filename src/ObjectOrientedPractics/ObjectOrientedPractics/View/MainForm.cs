@@ -1,3 +1,4 @@
+using ObjectOrientedPractics.Model;
 using ObjectOrientedPractics.View.Tabs;
 
 namespace ObjectOrientedPractics.View;
@@ -8,9 +9,15 @@ namespace ObjectOrientedPractics.View;
 public partial class MainForm : Form
 {
     /// <summary>
+    /// Хранит данные обо всех товарах и покупателях магазина.
+    /// </summary>
+    private Store _store = new Store();
+
+    /// <summary>
     /// Пользовательский элемент управления для работы со списком товаров.
     /// </summary>
     private ItemsTab _itemsTab;
+
     /// <summary>
     /// Пользовательский элемент управления для работы со списком покупателей.
     /// </summary>
@@ -19,22 +26,16 @@ public partial class MainForm : Form
     public MainForm()
     {
         InitializeComponent();
+
         _itemsTab = new ItemsTab();
         _itemsTab.Dock = DockStyle.Fill;
         tabPage1.Controls.Add(_itemsTab);
-        
+
         _customersTab = new CustomersTab();
         _customersTab.Dock = DockStyle.Fill;
-        
         tabControl1.TabPages[1].Controls.Add(_customersTab);
-    }
 
-    /// <summary>
-    /// Срабатывает при первоначальной загрузке главной формы на экран.
-    /// </summary>
-    /// <param name="sender">Источник события.</param>
-    /// <param name="e">Аргументы события.</param>
-    private void MainForm_Load(object sender, EventArgs e)
-    {
+        _itemsTab.Items = _store.Items;
+        _customersTab.Customers = _store.Customers;
     }
 }

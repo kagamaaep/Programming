@@ -1,4 +1,5 @@
-﻿using ObjectOrientedPractics.Model;
+﻿using System.ComponentModel;
+using ObjectOrientedPractics.Model;
 using ObjectOrientedPractics.Services;
 
 namespace ObjectOrientedPractics.View.Tabs;
@@ -11,13 +12,31 @@ public partial class CustomersTab : UserControl
     private List<Customer> _customers = new List<Customer>();
     
     /// <summary>
+    /// Возвращает и задаёт список покупателей вкладки.
+    /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public List<Customer> Customers
+    {
+        get
+        {
+            return _customers;
+        }
+        set
+        {
+            ValueValidator.AssertValueNotNull(value, nameof(Customers));
+            _customers = value;
+            UpdateListBox();
+        }
+    }
+    
+    /// <summary>
     /// Создает экземпляр класса <see cref="CustomersTab"/> и инициализирует компоненты.
     /// </summary>
     public CustomersTab()
     {
         InitializeComponent();
         IdTextBox.ReadOnly = true;
-        _customers = ProjectSerializer.LoadCustomers(); // Загружаем сохраненные товары в память
+        _customers = ProjectSerializer.LoadCustomers();
 
         foreach (var customer in _customers)
         {
@@ -36,15 +55,21 @@ public partial class CustomersTab : UserControl
         {
             IdTextBox.Text = string.Empty;
             FullNameTextBox.Text = string.Empty;
-            AddressTextBox.Text = string.Empty;
+            addressControl1.Address = new Address();
 
             return;
         }
-
+        
         Customer? selectedCustomer = CustomersListBox.SelectedItem as Customer;
+        if (selectedCustomer == null)
+            
+        {
+            return;
+        }
+        
         IdTextBox.Text = selectedCustomer?.Id.ToString();
         FullNameTextBox.Text = selectedCustomer?.FullName;
-        AddressTextBox.Text = selectedCustomer?.Address;
+        addressControl1.Address = selectedCustomer.Address;
     }
 
     /// <summary>
@@ -57,7 +82,7 @@ public partial class CustomersTab : UserControl
     {
         Customer newCustomer = new Customer();
         newCustomer.FullName = $"Покупатель {newCustomer.Id}";
-        newCustomer.Address = "Адрес";
+        newCustomer.Address = new Address();
         _customers.Add(newCustomer);
         CustomersListBox.Items.Add(newCustomer);
         CustomersListBox.SelectedItem = newCustomer;
@@ -128,35 +153,6 @@ public partial class CustomersTab : UserControl
     }
     
     /// <summary>
-    /// Срабатывает при изменении текста в поле адреса покупателя.
-    /// </summary>
-    /// <param name="sender">Источник события.</param>
-    /// <param name="e">Аргументы события.</param>
-    private void AddressTextBox_TextChanged(object sender, EventArgs e)
-    {
-        if (CustomersListBox.SelectedIndex == -1)
-        {
-            return;
-        }
-
-        Customer? selectedItem = CustomersListBox.SelectedItem as Customer;
-
-        if (selectedItem != null)
-        {
-            try
-            {
-                selectedItem.Address = AddressTextBox.Text;
-                AddressTextBox.BackColor = Color.White;
-                ProjectSerializer.SaveCustomers(_customers);
-            }
-            catch (Exception)
-            {
-                AddressTextBox.BackColor = Color.Red;
-            }
-        }
-    }
-    
-    /// <summary>
     /// Срабатывает при нажатии на кнопку генерации случайного покупателя.
     /// </summary>
     /// <param name="sender">Источник события.</param>
@@ -168,5 +164,18 @@ public partial class CustomersTab : UserControl
         CustomersListBox.Items.Add(randomCustomer);
         CustomersListBox.SelectedItem = randomCustomer;
         ProjectSerializer.SaveCustomers(_customers);
+    }
+    
+    /// <summary>
+    /// Обновляет отображение списка товаров в элементе ListBox.
+    /// </summary>
+    private void UpdateListBox()
+    {
+        CustomersListBox.Items.Clear();
+
+        foreach (var item in _customers)
+        {
+            CustomersListBox.Items.Add(item);
+        }
     }
 }

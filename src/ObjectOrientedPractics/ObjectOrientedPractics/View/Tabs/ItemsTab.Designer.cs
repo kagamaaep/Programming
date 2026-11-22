@@ -40,6 +40,8 @@ partial class ItemsTab
         ItemsListBox = new System.Windows.Forms.ListBox();
         ItemsLabel = new System.Windows.Forms.Label();
         panel2 = new System.Windows.Forms.Panel();
+        CategoryComboBox = new System.Windows.Forms.ComboBox();
+        label1 = new System.Windows.Forms.Label();
         InfoTextBox = new System.Windows.Forms.TextBox();
         NameTextBox = new System.Windows.Forms.TextBox();
         InfoLabel = new System.Windows.Forms.Label();
@@ -157,6 +159,8 @@ partial class ItemsTab
         // panel2
         // 
         panel2.BackColor = System.Drawing.Color.White;
+        panel2.Controls.Add(CategoryComboBox);
+        panel2.Controls.Add(label1);
         panel2.Controls.Add(InfoTextBox);
         panel2.Controls.Add(NameTextBox);
         panel2.Controls.Add(InfoLabel);
@@ -172,11 +176,29 @@ partial class ItemsTab
         panel2.Size = new System.Drawing.Size(338, 428);
         panel2.TabIndex = 1;
         // 
+        // CategoryComboBox
+        // 
+        CategoryComboBox.FormattingEnabled = true;
+        CategoryComboBox.Location = new System.Drawing.Point(71, 86);
+        CategoryComboBox.Name = "CategoryComboBox";
+        CategoryComboBox.Size = new System.Drawing.Size(100, 23);
+        CategoryComboBox.TabIndex = 11;
+        CategoryComboBox.SelectedIndexChanged += CategoryComboBox_SelectedIndexChanged;
+        // 
+        // label1
+        // 
+        label1.Location = new System.Drawing.Point(2, 85);
+        label1.Name = "label1";
+        label1.Size = new System.Drawing.Size(62, 23);
+        label1.TabIndex = 10;
+        label1.Text = "Category:";
+        label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+        // 
         // InfoTextBox
         // 
         InfoTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
         InfoTextBox.BackColor = System.Drawing.Color.White;
-        InfoTextBox.Location = new System.Drawing.Point(2, 214);
+        InfoTextBox.Location = new System.Drawing.Point(3, 265);
         InfoTextBox.Multiline = true;
         InfoTextBox.Name = "InfoTextBox";
         InfoTextBox.Size = new System.Drawing.Size(332, 133);
@@ -187,7 +209,7 @@ partial class ItemsTab
         // 
         NameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
         NameTextBox.BackColor = System.Drawing.Color.White;
-        NameTextBox.Location = new System.Drawing.Point(2, 109);
+        NameTextBox.Location = new System.Drawing.Point(3, 160);
         NameTextBox.Multiline = true;
         NameTextBox.Name = "NameTextBox";
         NameTextBox.Size = new System.Drawing.Size(332, 76);
@@ -196,7 +218,7 @@ partial class ItemsTab
         // 
         // InfoLabel
         // 
-        InfoLabel.Location = new System.Drawing.Point(2, 188);
+        InfoLabel.Location = new System.Drawing.Point(3, 239);
         InfoLabel.Name = "InfoLabel";
         InfoLabel.Size = new System.Drawing.Size(82, 23);
         InfoLabel.TabIndex = 7;
@@ -205,7 +227,7 @@ partial class ItemsTab
         // 
         // NameLabel
         // 
-        NameLabel.Location = new System.Drawing.Point(2, 83);
+        NameLabel.Location = new System.Drawing.Point(3, 134);
         NameLabel.Name = "NameLabel";
         NameLabel.Size = new System.Drawing.Size(53, 23);
         NameLabel.TabIndex = 5;
@@ -215,7 +237,7 @@ partial class ItemsTab
         // CostTextBox
         // 
         CostTextBox.BackColor = System.Drawing.Color.White;
-        CostTextBox.Location = new System.Drawing.Point(49, 57);
+        CostTextBox.Location = new System.Drawing.Point(71, 57);
         CostTextBox.Name = "CostTextBox";
         CostTextBox.Size = new System.Drawing.Size(100, 23);
         CostTextBox.TabIndex = 4;
@@ -242,7 +264,7 @@ partial class ItemsTab
         // IdTextBox
         // 
         IdTextBox.BackColor = System.Drawing.Color.White;
-        IdTextBox.Location = new System.Drawing.Point(49, 28);
+        IdTextBox.Location = new System.Drawing.Point(71, 28);
         IdTextBox.Name = "IdTextBox";
         IdTextBox.ReadOnly = true;
         IdTextBox.Size = new System.Drawing.Size(100, 23);
@@ -270,6 +292,10 @@ partial class ItemsTab
         panel2.PerformLayout();
         ResumeLayout(false);
     }
+
+    private System.Windows.Forms.ComboBox CategoryComboBox;
+
+    private System.Windows.Forms.Label label1;
 
     private System.Windows.Forms.Button GenerateButton;
 

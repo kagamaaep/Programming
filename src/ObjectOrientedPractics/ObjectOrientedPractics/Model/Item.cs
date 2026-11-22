@@ -63,14 +63,15 @@ public class Item
         }
         set
         {
-            // Проверяем цену на вхождение в допустимый диапазон
-            if (value is < 0 or > 100000)
-            {
-                throw new ArgumentException("Стоимость товара должна быть в диапазоне от 0 до 100000.");
-            }
+            ValueValidator.AssertOnRange(value, 0, 100000, nameof(Cost));
             _cost = value;
         }
     }
+    
+    /// <summary>
+    /// Возвращает и задаёт категорию товара.
+    /// </summary>
+    public Category Category { get; set; }
 
     /// <summary>
     /// Создаёт экземпляр класса <see cref="Item"/> по умолчанию с автоматической генерацией идентификатора.
@@ -79,18 +80,20 @@ public class Item
     {
         _id=IdGenerator.GetNextId();
     }
-    
+
     /// <summary>
     /// Создаёт экземпляр класса <see cref="Item"/> с заданными параметрами.
     /// </summary>
     /// <param name="name">Название товара. Должно быть не более 200 символов.</param>
     /// <param name="info">Описание товара. Должно быть не более 1000 символов.</param>
     /// <param name="cost">Стоимость товара. Должна быть в диапазоне от 0 до 100 000.</param>
-    public Item(string name, string info, double cost)
+    /// <param name="category">Категория товара.</param>
+    public Item(string name, string info, double cost, Category category)
     {
         Name = name;
         Info = info;
         Cost = cost;
+        Category = category;
         _id = IdGenerator.GetNextId();
     }
     
